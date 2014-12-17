@@ -14,25 +14,29 @@ module Chess
 
       [[:white, 7, 6], [:black, 0, 1]].each do |color, r, pawn_r|
         self[r, 0] = Rook.new(self, color)
-        self[r, 7] = Rook.new(self, color)
         self[r, 1] = Knight.new(self, color)
-        self[r, 6] = Knight.new(self, color)
         self[r, 2] = Bishop.new(self, color)
-        self[r, 5] = Bishop.new(self, color)
-        self[r, 4] = King.new(self, color)
         self[r, 3] = Queen.new(self, color)
+        self[r, 4] = King.new(self, color)
+        self[r, 5] = Bishop.new(self, color)
+        self[r, 6] = Knight.new(self, color)
+        self[r, 7] = Rook.new(self, color)
         (0...8).each do |c|
           self[pawn_r, c] = Pawn.new(self, color)
         end
       end
     end
 
-    def to_s
+    def to_s(cursor_pos = nil)
       result = "\n—————————————————\n  a b c d e f g h\n"
       self.grid.each_with_index do |row, r|
         result << (8 - r).to_s << " "
-        row.each do |el|
-          result << ((el.nil?) ? '.' : el.to_s) + ' '
+        row.each_with_index do |piece, c|
+          if cursor_pos == [r, c]
+            result << "X "
+          else
+            result << ((piece.nil?) ? '.' : piece.to_s) + ' '
+          end
         end
         result << "|\n"
       end

@@ -3,6 +3,8 @@ require_relative "piece.rb"
 require_relative "game.rb"
 require_relative "player.rb"
 require_relative "helpers.rb"
+require 'colorize'
+require 'io/console'
 
 require "byebug"
 

@@ -12,18 +12,17 @@ module Chess
       loop do
         begin
           puts board
-          players.first.play_turn
 
-          if board.checkmate?(players.last.color)
-            puts board
-            puts "Checkmate! #{players.first.name} (#{players.first.color}) won!"
+          current_player, next_player = players
+
+          if board.checkmate?(current_player.color)
+            puts "Checkmate! #{next_player.name} (#{next_player.color}) won!"
             break
+          elsif board.in_check?(current_player.color)
+            puts "You are in check."
           end
 
-          if board.in_check?(players.last.color)
-            puts "#{other_color(players.last.color)} is in CHECK"
-          end
-
+          current_player.play_turn
           players.reverse!
         rescue InvalidMoveError => e
           puts e.message
