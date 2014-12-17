@@ -5,9 +5,7 @@ module Chess
 
     def initialize(player1, player2)
       @players = [player1, player2]
-      @board = Board.new
-      player1.board = board
-      player2.board = board
+      player1.board = player2.board = @board = Board.new
     end
 
     def play
@@ -16,8 +14,14 @@ module Chess
           puts board
           players.first.play_turn
 
+          if board.checkmate?(players.last.color)
+            puts board
+            puts "Checkmate! #{players.first.name} (#{players.first.color}) won!"
+            break
+          end
+
           if board.in_check?(players.last.color)
-            puts "#{other_color(piece.color)} is in CHECK"
+            puts "#{other_color(players.last.color)} is in CHECK"
           end
 
           players.reverse!

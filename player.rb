@@ -1,8 +1,9 @@
 module Chess
   class HumanPlayer
-    attr_accessor :board, :color
+    attr_accessor :board, :color, :name
 
-    def initialize(color)
+    def initialize(name, color)
+      @name = name
       @color = color
     end
 
@@ -11,12 +12,13 @@ module Chess
     end
 
     def get_move
-      print "What is your move, #{color}? (r c r c) "
-      move = gets.chomp.scan(/[0-9]/).map { |c| c.to_i }
-      from = move.take(2)
-      to = move.drop(2)
+      print "What is your move, #{color}? "
+      move = gets.chomp.scan(/([a-h])([1-8])/).map(&:reverse)
+      from, to = move
 
-      [from, to]
+      # Convert from human readable chess format to r, c indexes
+      letters = %w(a b c d e f g h)
+      move.map { |pos| [8 - pos.first.to_i, letters.index(pos.last)] }
     end
   end
 end

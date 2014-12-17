@@ -2,11 +2,9 @@ module Chess
   class Piece
     attr_accessor :pos, :board, :color
 
-    def initialize(pos, board, color)
-      @pos = pos
+    def initialize(board, color)
       @board = board
       @color = color
-      @board[*pos] = self
     end
 
     def move_into_check?(pos)
@@ -26,13 +24,12 @@ module Chess
 
       move_dirs.each do |dir|
         pos = self.pos
-        (1..8).each do |i|
-          motion = dir.map { |v| v * i }
+        (1..8).each do |magnitude|
+          motion = dir.map { |v| v * magnitude }
           new_pos = pairwise_add(self.pos, motion)
-          r, c = new_pos
           break if !(new_pos.all? { |v| (0...8).include? v })
-          break if !(board[r, c].nil?) && board[r, c].color == self.color
-          if !(board[r, c].nil?) && board[r, c].color != self.color
+          break if !(board[*new_pos].nil?) && board[*new_pos].color == self.color
+          if !(board[*new_pos].nil?) && board[*new_pos].color != self.color
             result << new_pos
             break
           end
@@ -41,11 +38,6 @@ module Chess
       end
       result
     end
-
-    def pairwise_add(arr1, arr2)
-      arr1.zip(arr2).map { |pair| pair.reduce(:+) }
-    end
-
   end
 
   class Bishop < SlidingPiece
@@ -92,10 +84,6 @@ module Chess
         result << new_pos
       end
       result
-    end
-
-    def pairwise_add(arr1, arr2)
-      arr1.zip(arr2).map { |pair| pair.reduce(:+) }
     end
   end
 
