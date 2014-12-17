@@ -36,13 +36,14 @@ module Chess
       Queen.new([7, 3], self, :white)
 
       # Testing for check (delete for production)
-      Knight.new([5,5], self, :black)
-
+      # Knight.new([5,5], self, :black)
+      # Bishop.new([2,6], self, :white)
     end
 
     def to_s
-      result = ''
-      self.grid.each do |row|
+      result = "—————————————————\n  0 1 2 3 4 5 6 7\n"
+      self.grid.each_with_index do |row, r|
+        result << r.to_s << " "
         row.each do |el|
           result << ((el.nil?) ? '.' : el.to_s) + ' '
         end
@@ -55,53 +56,95 @@ module Chess
       self.grid[r][c]
     end
 
-    def []= (r, c, val)
+    def []=(r, c, val)
       self.grid[r][c] = val
     end
 
-    def move(start, end_pos)
-      # Todo: Needs refactoring
+    def other_color(color)
+      (color == :white) ? :black : :white
+    end
+
+    def move(start, end_pos, color)
+      piece = self[*start]
+
+      if piece.nil?
+        raise InvalidMoveError.new "No piece there."
+      elsif color != piece.color
+        raise InvalidMoveError.new "Can't move opponent's piece."
+      elsif !piece.moves.include?(end_pos)
+        raise InvalidMoveError.new "Not in the #{piece.class}'s moveset."
+      end
+
+      test_move_board = self.dup
+      test_move_board.move!(start, end_pos)
+      if test_move_board.in_check?(piece.color)
+        raise InvalidMoveError.new "Not allowed to move into check"
+      end
+
+      self.move!(start, end_pos)
+    end
+
+    def move!(start, end_pos)
       start_r, start_c = start
       end_r, end_c = end_pos
 
       piece = self.grid[start_r][start_c]
 
-      raise InvalidMoveError if piece.nil? || !piece.moves.include?(end_pos)
+      if piece.nil? || !piece.moves.include?(end_pos)
+        raise InvalidMoveError.new "Bad move: #{start} to #{end_pos}"
+      end
 
-      # if piece.moves.include?(end_pos)
-      #   self[*start], self[*end_pos] = self[*end_pos], self[*start]
-      #   piece.pos = end_pos
-      # end
-
-      self.grid[start_r][start_c], self.grid[end_r][end_c] =
-      self.grid[end_r][end_c], self.grid[start_r][start_c]
+      self[start_r, start_c], self[end_r, end_c] = self[*end_pos], self[*start]
       piece.pos = end_pos
+
+      nil
     end
 
-    def in_check(color)
-      king = nil
-      # Find the {color} king
-      self.grid.each do |r|
-        r.each_with_index do |val, i|
-          unless val.nil?
-            king = val if val.class == King and val.color == color
+    def in_check?(color)
+      pieces = grid.flatten.compact
+      our_king = pieces.find { |p| p.is_a?(King) && (p.color == color) }
+      pieces.any? { |p| p.color != color && p.moves.include?(our_king.pos) }
+    end
+
+    def checkmate?(color)
+      return false if !in_check?(color)
+      p in_check? :black
+
+      self.grid.each_with_index do |row, r|
+        row.each_with_index do |piece, c|
+          next if piece.nil? || piece.color != color
+          piece.moves.each do |new_pos|
+            dup_board = self.dup
+            dup_board.move!([r, c], new_pos)
+            if !dup_board.in_check?(color)
+              p "this gets us out of check: #{[r, c]} to #{new_pos}"
+              return false
+            end
           end
         end
       end
-      # Find pieces that can move to {color} king's position
-      check = false
-      self.grid.each do |r|
-        r.each_with_index do |val, i|
-          unless val.nil?
-            check = true if val.moves.include?(king.pos)
+      true
+    end
+
+    def dup
+      dup_board = Board.new
+
+
+      # Iterate through grid, create new objs with same par, feed dup_board
+      self.grid.each_with_index do |r, i|
+        r.each_with_index do |el, j|
+          if el.nil?
+            dup_board[i, j] = nil
+          else
+            # el_class = el.class
+            # el_pos = el.pos
+            # el_color = el.color
+            dup_board[i, j] = el.class.new([i, j], dup_board, el.color)
           end
         end
       end
 
-
-      puts "This is the #{color} king's position: #{king.pos}"
-      puts "Check" if check
+      dup_board
     end
-
   end
 end
