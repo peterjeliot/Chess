@@ -12,6 +12,10 @@ module Chess
       @color = color
       @board[*pos] = self
     end
+
+    def move_into_check
+
+    end
   end
 
   class SlidingPiece < Piece
@@ -45,7 +49,7 @@ module Chess
     end
 
     def to_s
-      'b'
+      color == :black ? "\u265D" : "\u2657"
     end
   end
 
@@ -55,7 +59,7 @@ module Chess
     end
 
     def to_s
-      'r'
+      color == :black ? "\u265C" : "\u2656"
     end
   end
 
@@ -65,7 +69,7 @@ module Chess
     end
 
     def to_s
-      'q'
+      color == :black ? "\u265B" : "\u2655"
     end
   end
 
@@ -96,7 +100,7 @@ module Chess
     end
 
     def to_s
-      'k'
+      color == :black ? "\u265E" : "\u2658"
     end
   end
 
@@ -107,7 +111,7 @@ module Chess
     end
 
     def to_s
-      'K'
+      color == :black ? "\u265A" : "\u2654"
     end
   end
 
@@ -115,7 +119,7 @@ module Chess
     def moves
       result = []
       r, c = self.pos
-      sign = (self.color == :white) ? 1 : -1
+      sign = (self.color == :white) ? -1 : 1
       if board[r + sign, c].nil?
         result << [r + sign, c]
       end
@@ -125,7 +129,7 @@ module Chess
       unless board[r + sign, c + 1].nil?
         result << [r + sign, c + 1]
       end
-      if (self.color == :black && r == 6) || (self.color == :white && r == 1)
+      if (self.color == :white && r == 6) || (self.color == :black && r == 1)
         if board[r + sign * 2, c].nil? && board[r + sign, c].nil?
           result << [r + sign * 2, c]
         end
@@ -134,7 +138,7 @@ module Chess
     end
 
     def to_s
-      'p'
+      color == :black ? "\u265F" : "\u2659"
     end
   end
 end
@@ -142,27 +146,23 @@ end
 include Chess
 
 board = Board.new
-b = Bishop.new([0,0], board, :white)
-b2 = Bishop.new([1,1], board, :white)
-r = Rook.new([1,0], board, :white)
-q = Queen.new([2,2], board, :white)
-k = Knight.new([5,1], board, :black)
-king = King.new([3,6], board, :black)
-pawn1 = Pawn.new([1,6], board, :white)
-pawn2 = Pawn.new([6,1], board, :black)
-# r2 = Bishop.new([1,1], board)
-# board[0,0] = b
-# board[1,1] = b2
-# board[1,0] = r
-# board[2,2] = q
-# board[5,1] = k
-# board[3,6] = king
-# board[1,6] = pawn1
-# board[6,1] = pawn2
+# b = Bishop.new([0,0], board, :white)
+# b2 = Bishop.new([1,1], board, :white)
+# r = Rook.new([1,0], board, :white)
+# q = Queen.new([2,2], board, :white)
+# k = Knight.new([5,0], board, :black)
+# king = King.new([3,6], board, :black)
+# pawn1 = Pawn.new([1,6], board, :white)
+# pawn2 = Pawn.new([6,1], board, :black)
+
+# p board[1,0].moves
+board.move([1, 0], [2, 0])
+# p board[2,0].moves
+# p board.grid[2][0].moves
+# board.move([0, 1], [2, 2])
 
 puts board
-# p board[0, 0].nil?
 
-# p b.pairwise_add([-1,-1], [5,6])
-p pawn1.moves
-p pawn2.moves
+p board[2,0].moves
+board.move([2,0], [3,0])
+board.in_check(:white)
