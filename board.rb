@@ -47,6 +47,13 @@ module Chess
         end
         result << "\n"
       end
+      result << "\n"
+      result << "   key: action\n"
+      result << "—————————————————————\n"
+      result << "arrows: move cursor\n"
+      result << " enter: select\n"
+      result << "     c: cancel\n"
+      result << "     q: quit\n"
       result
     end
 
