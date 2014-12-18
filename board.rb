@@ -27,13 +27,17 @@ module Chess
       end
     end
 
-    def to_s(cursor_pos = nil)
-      result = "\n—————————————————\n  a b c d e f g h\n"
+    def to_s(options = {})
+      default_options = { cursor_pos: nil, moves: []}
+      options = default_options.merge(options)
+      result = "\e[H\e[2J\n—————————————————\n  a b c d e f g h\n"
       self.grid.each_with_index do |row, r|
         result << (8 - r).to_s << " "
         row.each_with_index do |piece, c|
-          if cursor_pos == [r, c]
+          if [r, c] == options[:cursor_pos]
             result << "X "
+          elsif options[:moves].include? [r, c]
+            result << "O "
           else
             result << ((piece.nil?) ? '.' : piece.to_s) + ' '
           end
