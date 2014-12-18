@@ -1,30 +1,25 @@
 module Chess
-  class HumanPlayer
+
+  class Player
+
     attr_accessor :board, :color, :name
 
     def initialize(name, color)
       @name = name
       @color = color
-      @cursor_pos = [0, 0]
     end
 
     def play_turn
       board.move(*get_move, self.color)
     end
 
-    def get_move
-      print "What is your move, #{color}? "
-      move = gets
-      if move.nil?
-        puts "\nReached the end of test input file."
-        exit
-      end
-      move = move.chomp.scan(/([a-h])([1-8])/).map(&:reverse)
-      from, to = move
+  end
 
-      # Convert from human readable chess format to r, c indexes
-      letters = %w(a b c d e f g h)
-      move.map { |pos| [8 - pos.first.to_i, letters.index(pos.last)] }
+  class HumanPlayer < Player
+
+    def initialize(name, color)
+      super
+      @cursor_pos = [0, 0]
     end
 
     def get_move
@@ -105,4 +100,19 @@ module Chess
     private
       attr_accessor :cursor_pos
   end
+
+  class ComputerPlayer < Player
+
+    def get_move
+      piece = board.pieces(self.color).reject do |piece|
+        piece.moves.empty?
+      end.sample
+
+      start_pos = piece.pos
+      end_pos = piece.moves.sample
+
+      [start_pos, end_pos]
+    end
+  end
+
 end

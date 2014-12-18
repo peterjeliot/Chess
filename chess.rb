@@ -11,7 +11,7 @@ require "byebug"
 include Chess
 
 player1 = HumanPlayer.new("Davide", :white)
-player2 = HumanPlayer.new("Peter", :black)
+player2 = ComputerPlayer.new("Peter", :black)
 g = Game.new(player1, player2)
 
 g.play

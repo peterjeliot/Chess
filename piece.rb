@@ -116,10 +116,10 @@ module Chess
       if board[r + sign, c].nil?
         result << [r + sign, c]
       end
-      unless board[r + sign, c - 1].nil?
+      unless board[r + sign, c - 1].nil? || board[r + sign, c - 1].color == self.color
         result << [r + sign, c - 1]
       end
-      unless board[r + sign, c + 1].nil?
+      unless board[r + sign, c + 1].nil? || board[r + sign, c + 1].color == self.color
         result << [r + sign, c + 1]
       end
       if (self.color == :white && r == 6) || (self.color == :black && r == 1)

@@ -56,7 +56,7 @@ module Chess
       piece.pos = [r, c] if !piece.nil?
     end
 
-    def pieces(color= nil)
+    def pieces(color = nil)
       grid.flatten.compact.select do |piece|
         color.nil? || color == piece.color
       end
