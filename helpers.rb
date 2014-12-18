@@ -1,4 +1,10 @@
 module Chess
+  class InvalidMoveError < RuntimeError
+  end
+
+  class NoMovesError < RuntimeError
+  end
+
   def other_color(color)
     (color == :white) ? :black : :white
   end

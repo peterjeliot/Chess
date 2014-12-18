@@ -1,7 +1,4 @@
 module Chess
-  class InvalidMoveError < ArgumentError
-  end
-
   class Board
     attr_accessor :grid
 
@@ -81,6 +78,16 @@ module Chess
       validate_move(color, piece, end_pos)
 
       self.move!(start, end_pos)
+    end
+
+    def promote_pawns
+      [[:white, 0], [:black, 7]].each do |color, r|
+        self.grid[r].each_with_index do |piece, c|
+          if piece.is_a? Pawn
+            self[r, c] = Queen.new(self, color)
+          end
+        end
+      end
     end
 
     def validate_move(color, piece, end_pos)

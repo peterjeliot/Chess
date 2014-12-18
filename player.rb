@@ -2,11 +2,12 @@ module Chess
 
   class Player
 
-    attr_accessor :board, :color, :name
+    attr_accessor :board, :color, :name, :move_counter
 
     def initialize(name, color)
       @name = name
       @color = color
+      @move_counter = 0
     end
 
     def play_turn
@@ -23,7 +24,6 @@ module Chess
     end
 
     def get_move
-      # @cursor_pos = [0, 0]
       loop do
         start_pos = get_start_pos
         next if start_pos.nil?
@@ -115,10 +115,10 @@ module Chess
         end.empty?
       end.sample
 
-      # if piece.nil?
-      #   throw :no_moves_left
-      #   exit
-      # end
+      if piece.nil?
+        raise NoMovesError.new "There are no moves left for #{name} (#{color})"
+        exit
+      end
 
       start_pos = piece.pos
       end_pos = piece.moves.sample

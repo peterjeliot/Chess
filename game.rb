@@ -27,8 +27,13 @@ module Chess
 
           current_player.play_turn
           players.reverse!
+
+          board.promote_pawns
         rescue InvalidMoveError => e
           puts e.message
+        rescue NoMovesError => e
+          puts e.message
+          exit
         end
       end
     end
