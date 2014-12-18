@@ -10,9 +10,12 @@ require "byebug"
 
 include Chess
 
-player1 = HumanPlayer.new("Davide", :white)
-player2 = HumanPlayer.new("Peter", :black)
-player3 = ComputerPlayer.new("ShallowBlue", :black)
-g = Game.new(player1, player2)
+davide = HumanPlayer.new("Davide", :white)
+peter = HumanPlayer.new("Peter", :black)
+c1 = ComputerPlayer.new("ShallowBlue", :black)
+c2 = ComputerPlayer.new("stuff", :white)
+loop do
+  g = Game.new(c1, c2)
 
-g.play
+  g.play
+end

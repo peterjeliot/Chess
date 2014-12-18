@@ -13,14 +13,14 @@ module Chess
       return if options[:blank]
 
       [[:white, 7, 6], [:black, 0, 1]].each do |color, r, pawn_r|
-        self[r, 0] = Rook.new(self, color)
+        self[r, 0] =   Rook.new(self, color)
         self[r, 1] = Knight.new(self, color)
         self[r, 2] = Bishop.new(self, color)
-        self[r, 3] = Queen.new(self, color)
-        self[r, 4] = King.new(self, color)
+        self[r, 3] =  Queen.new(self, color)
+        self[r, 4] =   King.new(self, color)
         self[r, 5] = Bishop.new(self, color)
         self[r, 6] = Knight.new(self, color)
-        self[r, 7] = Rook.new(self, color)
+        self[r, 7] =   Rook.new(self, color)
         (0...8).each do |c|
           self[pawn_r, c] = Pawn.new(self, color)
         end
@@ -30,7 +30,8 @@ module Chess
     def to_s(options = {})
       default_options = { cursor_pos: nil, moves: []}
       options = default_options.merge(options)
-      result = "\e[H\e[2J  a b c d e f g h\n"
+      result = "\e[H\e[2J" #control character to clear screen
+      result << "  a b c d e f g h\n"
       self.grid.each_with_index do |row, r|
         result << (8 - r).to_s << " "
         row.each_with_index do |piece, c|
@@ -43,7 +44,8 @@ module Chess
             background = :cyan
           end
           str = ((piece.nil?) ? '_' : piece.to_s)
-          result << str.colorize(color: text_color, background: background) + ' '
+          result << str.colorize(color: text_color, background: background)
+          result << ' '
         end
         result << "\n"
       end
@@ -54,6 +56,7 @@ module Chess
       result << " enter: select\n"
       result << "     c: cancel\n"
       result << "     q: quit\n"
+      result << "\n"
       result
     end
 
@@ -68,15 +71,24 @@ module Chess
 
     def pieces(color = nil)
       grid.flatten.compact.select do |piece|
-        color.nil? || color == piece.color
+        color.nil? || (color == piece.color)
       end
     end
 
     def move(start, end_pos, color)
       piece = self[*start]
 
+      validate_move(color, piece, end_pos)
+
+      self.move!(start, end_pos)
+    end
+
+    def validate_move(color, piece, end_pos)
       if piece.nil?
         raise InvalidMoveError.new "No piece there."
+      elsif !end_pos.all? { |v| (0...8).include? v }
+        raise InvalidMoveError.new "Can't move off the board. This is probably a bug."
+        exit
       elsif color != piece.color
         raise InvalidMoveError.new "Can't move opponent's piece."
       elsif !piece.moves.include?(end_pos)
@@ -84,12 +96,12 @@ module Chess
       end
 
       test_move_board = self.dup
-      test_move_board.move!(start, end_pos)
+      test_move_board.move!(piece.pos, end_pos)
       if test_move_board.in_check?(piece.color)
         raise InvalidMoveError.new "Not allowed to move into check"
       end
 
-      self.move!(start, end_pos)
+      true
     end
 
     def move!(start, end_pos)
@@ -102,8 +114,15 @@ module Chess
     end
 
     def in_check?(color)
-      our_king = pieces(color).find { |p| p.is_a?(King) }
-      pieces(other_color(color)).any? { |p| p.moves.include?(our_king.pos) }
+      our_king = pieces(color).find { |piece| piece.is_a?(King) }
+      pieces(other_color(color)).any? { |piece| piece.moves.include?(our_king.pos) }
+    end
+
+    def stalemate?(color)
+      return true if pieces.count <= 2
+      pieces(color).all? do |piece|
+        piece.moves.empty?
+      end
     end
 
     def checkmate?(color)

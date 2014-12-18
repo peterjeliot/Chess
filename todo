@@ -1,0 +1,11 @@
+pawns can take col 7 (-1) from col 0 ????
+misc bug fixes from fuzzer
+
+print move log
+exchange pawns for pieces
+show taken pieces
+better stalemate checking
+
+comp AI
+  capture when available
+  pieces "strategy"

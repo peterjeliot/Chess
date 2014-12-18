@@ -105,12 +105,25 @@ module Chess
 
     def get_move
       piece = board.pieces(self.color).reject do |piece|
-        piece.moves.empty?
+        piece.moves.select do |pos|
+          begin
+            board.validate_move(color, piece, pos)
+            true
+          rescue InvalidMoveError => e
+            false
+          end
+        end.empty?
       end.sample
+
+      # if piece.nil?
+      #   throw :no_moves_left
+      #   exit
+      # end
 
       start_pos = piece.pos
       end_pos = piece.moves.sample
 
+      p piece.moves
       [start_pos, end_pos]
     end
   end

@@ -15,7 +15,10 @@ module Chess
 
           current_player, next_player = players
 
-          if board.checkmate?(current_player.color)
+          if board.stalemate?(current_player.color)
+            puts "Stalemate! Nobody wins!"
+            break
+          elsif board.checkmate?(current_player.color)
             puts "Checkmate! #{next_player.name} (#{next_player.color}) won!"
             break
           elsif board.in_check?(current_player.color)

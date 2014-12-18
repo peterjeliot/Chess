@@ -113,6 +113,10 @@ module Chess
       result = []
       r, c = self.pos
       sign = (self.color == :white) ? -1 : 1
+      
+      #todo: replace this with exchanging the piece
+      return [] if !(0...8).include?(r + sign)
+
       if board[r + sign, c].nil?
         result << [r + sign, c]
       end
