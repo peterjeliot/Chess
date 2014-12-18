@@ -30,19 +30,22 @@ module Chess
     def to_s(options = {})
       default_options = { cursor_pos: nil, moves: []}
       options = default_options.merge(options)
-      result = "\e[H\e[2J\n—————————————————\n  a b c d e f g h\n"
+      result = "\e[H\e[2J  a b c d e f g h\n"
       self.grid.each_with_index do |row, r|
         result << (8 - r).to_s << " "
         row.each_with_index do |piece, c|
+          text_color = :white
+          background = nil
           if [r, c] == options[:cursor_pos]
-            result << "X "
-          elsif options[:moves].include? [r, c]
-            result << "O "
-          else
-            result << ((piece.nil?) ? '.' : piece.to_s) + ' '
+            text_color = :red
           end
+          if options[:moves].include?([r, c])
+            background = :cyan
+          end
+          str = ((piece.nil?) ? '_' : piece.to_s)
+          result << str.colorize(color: text_color, background: background) + ' '
         end
-        result << "|\n"
+        result << "\n"
       end
       result
     end
