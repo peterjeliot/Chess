@@ -34,70 +34,70 @@ module Chess
     end
 
 
-    def get_start_pos
-      loop do
-        new_cursor_pos = @cursor_pos.dup
-        puts board.to_s(cursor_pos: @cursor_pos)
-        case STDIN.getch
-        when 'q'
-          exit
-        when "\r"
-          piece = board[*new_cursor_pos]
-          next if piece.nil? || piece.color != self.color
-          return @cursor_pos
-        when "\e"
-          STDIN.getch
-          case STDIN.getch
-          when "A"
-            new_cursor_pos[0] -= 1
-          when "B"
-            new_cursor_pos[0] += 1
-          when "C"
-            new_cursor_pos[1] += 1
-          when "D"
-            new_cursor_pos[1] -= 1
-          end
-        end
-        if new_cursor_pos.all? { |pos| pos.between?(0, 7) }
-          @cursor_pos = new_cursor_pos
-        end
-      end
-    end
-
-    def get_end_pos(start_pos)
-      piece = board[*start_pos]
-      @cursor_pos = start_pos.dup
-      loop do
-        new_cursor_pos = @cursor_pos.dup
-        puts board.to_s(cursor_pos: @cursor_pos, moves: piece.moves)
-        case STDIN.getch
-        when "q"
-          exit
-        when "c"
-          return nil
-          break
-        when "\r"
-          return @cursor_pos
-        when "\e"
-          STDIN.getch
-          case STDIN.getch
-          when "A"
-            new_cursor_pos[0] -= 1
-          when "B"
-            new_cursor_pos[0] += 1
-          when "C"
-            new_cursor_pos[1] += 1
-          when "D"
-            new_cursor_pos[1] -= 1
-          end
-        end
-        if new_cursor_pos.all? { |pos| pos.between?(0, 7) }
-          @cursor_pos = new_cursor_pos
-        end
-      end
-    end
-
     private
+      def get_start_pos
+        loop do
+          new_cursor_pos = @cursor_pos.dup
+          puts board.to_s(cursor_pos: @cursor_pos)
+          case STDIN.getch
+          when 'q'
+            exit
+          when "\r"
+            piece = board[*new_cursor_pos]
+            next if piece.nil? || piece.color != self.color
+            return @cursor_pos
+          when "\e"
+            STDIN.getch
+            case STDIN.getch
+            when "A"
+              new_cursor_pos[0] -= 1
+            when "B"
+              new_cursor_pos[0] += 1
+            when "C"
+              new_cursor_pos[1] += 1
+            when "D"
+              new_cursor_pos[1] -= 1
+            end
+          end
+          if new_cursor_pos.all? { |pos| pos.between?(0, 7) }
+            @cursor_pos = new_cursor_pos
+          end
+        end
+      end
+
+      def get_end_pos(start_pos)
+        piece = board[*start_pos]
+        @cursor_pos = start_pos.dup
+        loop do
+          new_cursor_pos = @cursor_pos.dup
+          puts board.to_s(cursor_pos: @cursor_pos, moves: piece.moves)
+          case STDIN.getch
+          when "q"
+            exit
+          when "c"
+            return nil
+            break
+          when "\r"
+            return @cursor_pos
+          when "\e"
+            STDIN.getch
+            case STDIN.getch
+            when "A"
+              new_cursor_pos[0] -= 1
+            when "B"
+              new_cursor_pos[0] += 1
+            when "C"
+              new_cursor_pos[1] += 1
+            when "D"
+              new_cursor_pos[1] -= 1
+            end
+          end
+          if new_cursor_pos.all? { |pos| pos.between?(0, 7) }
+            @cursor_pos = new_cursor_pos
+          end
+        end
+      end
+
       attr_accessor :cursor_pos
   end
 
@@ -117,13 +117,12 @@ module Chess
 
       if piece.nil?
         raise NoMovesError.new "There are no moves left for #{name} (#{color})"
-        exit
       end
 
       start_pos = piece.pos
       end_pos = piece.moves.sample
 
-      p piece.moves
+      # p piece.moves
       [start_pos, end_pos]
     end
   end

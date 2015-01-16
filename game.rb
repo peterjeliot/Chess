@@ -33,7 +33,7 @@ module Chess
           puts e.message
         rescue NoMovesError => e
           puts e.message
-          exit
+          return
         end
       end
     end

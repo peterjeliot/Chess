@@ -33,16 +33,16 @@ module Chess
         result << (8 - r).to_s << " "
         row.each_with_index do |piece, c|
           text_color = :white
-          background = nil
+          background = (r + c) % 2 == 0 ? :blue : :light_blue
           if [r, c] == options[:cursor_pos]
             text_color = :red
           end
           if options[:moves].include?([r, c])
             background = :cyan
           end
-          str = ((piece.nil?) ? '_' : piece.to_s)
+          str = ((piece.nil?) ? '_' : piece.to_s) + ' '
           result << str.colorize(color: text_color, background: background)
-          result << ' '
+          result << ''
         end
         result << "\n"
       end
@@ -93,13 +93,13 @@ module Chess
     def validate_move(color, piece, end_pos)
       if piece.nil?
         raise InvalidMoveError.new "No piece there."
+      elsif !piece.moves.include?(end_pos)
+        raise InvalidMoveError.new "Not in the #{piece.class}'s moveset."
       elsif !end_pos.all? { |v| (0...8).include? v }
         raise InvalidMoveError.new "Can't move off the board. This is probably a bug."
         exit
       elsif color != piece.color
         raise InvalidMoveError.new "Can't move opponent's piece."
-      elsif !piece.moves.include?(end_pos)
-        raise InvalidMoveError.new "Not in the #{piece.class}'s moveset."
       end
 
       test_move_board = self.dup
