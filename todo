@@ -1,5 +1,6 @@
 pawns can take col 7 (-1) from col 0 ????
 misc bug fixes from fuzzer
+  there are some issues with making sure moves that go into check/etc aren't included. Not sure where to do that validation.
 
 print move log
 exchange pawns for pieces
