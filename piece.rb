@@ -100,7 +100,8 @@ module Chess
 
   class King < SteppingPiece
     def move_dirs
-      [-1, 0, 1].repeated_permutation(2).to_a - [[0,0]]
+      [[0,1],[0,-1],[1, 0],[-1, 0],
+       [1,1],[1,-1],[-1,1],[-1,-1]]
     end
 
     def to_s

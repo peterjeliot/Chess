@@ -28,9 +28,9 @@ module Chess
       default_options = { cursor_pos: nil, moves: []}
       options = default_options.merge(options)
       result = "\e[H\e[2J" #control character to clear screen
-      result << "  a b c d e f g h\n"
+      result += "  a b c d e f g h\n"
       self.grid.each_with_index do |row, r|
-        result << (8 - r).to_s << " "
+        result += (8 - r).to_s + " "
         row.each_with_index do |piece, c|
           text_color = :white
           background = (r + c) % 2 == 0 ? :blue : :light_blue
@@ -41,19 +41,19 @@ module Chess
             background = :cyan
           end
           str = ((piece.nil?) ? '_' : piece.to_s) + ' '
-          result << str.colorize(color: text_color, background: background)
-          result << ''
+          result += str#.colorize(color: text_color, background: background)
+          result += ''
         end
-        result << "\n"
+        result += "\n"
       end
-      result << "\n"
-      result << "   key: action\n"
-      result << "—————————————————————\n"
-      result << "arrows: move cursor\n"
-      result << " enter: select\n"
-      result << "     c: cancel\n"
-      result << "     q: quit\n"
-      result << "\n"
+      result += "\n"
+      result += "   key: action\n"
+      result += "—————————————————————\n"
+      result += "arrows: move cursor\n"
+      result += " enter: select\n"
+      result += "     c: cancel\n"
+      result += "     q: quit\n"
+      result += "\n"
       result
     end
 
