@@ -17,3 +17,8 @@ Possible future features:
 
 Download the .zip, and double click `chess.sh` (on a mac). Alternatively, run `ruby chess.rb` in the command line.
 Currently you change the players by editing `chess.rb`. This will likely be replaced with a proper menu.
+
+## Videos
+
+![Human vs. Computer gameplay](/../videos/videos/gameplay.gif?raw=true "Human vs. Computer Gameplay")
+![Computer vs. Computer gameplay](/../videos/videos/autoplay.gif?raw=true "Computer vs. Computer Gameplay")
