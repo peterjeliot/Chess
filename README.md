@@ -1,4 +1,4 @@
-=== Chess in Ruby
+# Chess in Ruby
 
 This is a fully functional implementation of Chess for the command line using OOP principles. Bonus features include:
 
